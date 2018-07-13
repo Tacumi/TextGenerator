@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import sys
 
 """
 マルコフ連鎖を用いて適当な文章を自動生成するファイル
 """
 
+import re
 import os.path
 import sqlite3
 import random
@@ -43,6 +45,7 @@ class GenerateText(object):
         for i in range(self.n):
             text = self._generate_sentence(con)
             generated_text += text
+            generated_text += '\n'
 
         # DBクローズ
         con.close()
@@ -156,8 +159,17 @@ class GenerateText(object):
 
 
 if __name__ == '__main__':
-    generator = GenerateText()
-    print(generator.generate())
-
-
-
+    if len(sys.argv) >= 2:
+        generator = GenerateText(int(sys.argv[1]))
+    else:
+        generator = GenerateText()
+    reye = leye = "@"
+    gentext = generator.generate()
+    if (re.search("…", gentext) != None):
+        reye = leye = "~"
+    elif (re.search(r"[!！]", gentext) != None):
+        leye = ">"
+        reye = "<"
+    elif ((re.search(r"[?？]", gentext) != None) or (re.search(r"たっけ", gentext) != None)):
+        reye = leye = "?"
+    print("( " + leye +"_" + reye + ")< " + gentext)
