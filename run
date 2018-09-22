@@ -1,0 +1,7 @@
+#!/usr/local/bin/fish
+while true
+  set GENTEXT (python GenerateText.py)
+  clear
+  printf $GENTEXT
+  string join ' ' (echo $GENTEXT | wc -cm | awk '{print }') '8 - 5 / 1 + p' | dc | xargs sleep
+end
